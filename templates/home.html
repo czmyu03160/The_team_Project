@@ -61,13 +61,12 @@
     <div class="navbar navbar-dark bg-dark shadow-sm">
         <img src="/static/Logo.png" alt="Logo">
                 <ul class="topmenu font">
-                  <div class="container mt-3">
+                  <div class="container mt-2">
                     <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">
                       Login
                     </button>
-                    <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">
-                      Register
-                    </button>
+                    <a class="btn btn-lg btn-outline-secondary" href="{{url_for("register")}}">Register
+                    </a>                        
                   </div>
                 </ul>
 
@@ -77,8 +76,8 @@
       <div class="modal-content" style="border-radius: 1rem;">
         <div class="row g-0">
           <div class="col-md-5 d-none d-md-block">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp"
-                 alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem; height: 100%; object-fit: cover;" />
+            <img src="static\Login.jpg"
+                 alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem; height: 80%; object-fit: cover;" />
           </div>
           <div class="col-md-7">
             <div class="modal-header border-0">
