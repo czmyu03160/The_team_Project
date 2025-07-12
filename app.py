@@ -48,6 +48,8 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html')
 
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
