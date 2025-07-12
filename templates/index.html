@@ -33,11 +33,6 @@
       user-select: none;
     }
 
-    @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-      }
-    }
     .topmenu {
         float: right
     }
@@ -50,7 +45,6 @@
       font-family: "Comic Sans MS";
       font-size: 1.5em;
       font-weight: bolder;
-      
     }
   </style>
   <link rel="icon" href="static\icon.png" type="image/x-icon">
@@ -65,9 +59,9 @@
                     <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">
                       Login
                     </button>
-                    <button type="button" class="btn btn-lg btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#RegisterModal">
-                      Register
-                    </button>                      
+                    </button>
+                    <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary">Register</a>
+                    </button>           
                   </div>
                 </ul>
 

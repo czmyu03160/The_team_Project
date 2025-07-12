@@ -15,11 +15,10 @@ def get_db_connection():
 @app.route('/')
 def index():    
     """Render the home page."""    
-    return render_template('home.html')
+    return render_template('index.html')
 
 @app.route('/register')
-def register():    
-    """Render the home page."""    
+def register():       
     return render_template('register.html')
 
 
