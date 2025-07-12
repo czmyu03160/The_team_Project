@@ -19,3 +19,6 @@ def register():
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
+
+__name__ = '__main__'
+app.run(debug=True) 
