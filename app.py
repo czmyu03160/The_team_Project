@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'asdfg12345'
 
@@ -10,6 +11,8 @@ def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+
 
 
 @app.route('/')
@@ -24,15 +27,24 @@ def register():
         firstname = request.form['firstname']
         email = request.form['email']
         password = request.form['password']
+        
         if not lastname or not firstname or not email or not password:
             flash('All fields are required.')
-        else:
-            conn = get_db_connection()
-            conn.execute('INSERT INTO accounts (lastname, firstname, email, pd) VALUES (?, ?, ?, ?)',
-                         (lastname, firstname, email, password))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('index'))
+            return redirect(url_for('register'))
+        
+        existing_email = conn.execute('SELECT id FROM accounts WHERE email = ?', (email,)).fetchone()
+        conn.close() 
+
+        if existing_email:
+            flash('This email have been registered!')
+            return redirect(url_for('register'))
+        
+        conn = get_db_connection()
+        conn.execute('INSERT INTO accounts (lastname, firstname, email, pd) VALUES (?, ?, ?, ?)',
+                        (lastname, firstname, email, password))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('index'))
     return render_template('register.html')
 
 
