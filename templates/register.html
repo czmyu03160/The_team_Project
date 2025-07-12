@@ -1,100 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
-</head>
-<body>
-<!-- Section: Design Block -->
-<section class="text-center text-lg-start">
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block head_extra %}
   <style>
-    .cascading-right {
-      margin-right: -50px;
-    }
-    .bg-body-tertiary {
-      background-color: #f8f9fa !important;
-    }
-    .shadow-4 {
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-    }
-    .shadow-5 {
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-    
     body {
         background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-        display: center;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        font-family: 'Segoe UI', Arial, sans-serif;
-        color: #333;
     }
-     .alert {
-        padding: 20px;
-        margin: 5px;
+    
+    .register-card {
+      backdrop-filter: blur(30px);
+      margin-top: 5rem; 
+      margin-bottom: 5rem; 
+    }
+
+    .flash-alert {
+        padding: 1rem;
+        margin-top: 1.5rem;
         color: #970020;
         background-color: #ffd5de;
+        border-radius: .25rem;
+        text-align: center;
     }
-
   </style>
+{% endblock %}
 
-  <!-- Jumbotron -->
-  <form method="post">
-  <div class="container py-5">
-    <div class="row d-flex justify-content-center">
-    <div class="row g-0 align-items-center">
-        <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px);">
-          <div class="card-body p-5 shadow-5 text-center" >
-            <h2 class="fw-bold mb-5">Sign up now</h2>
-            <form action="/register" method="POST">
-
+{% block content %}
+<section class="text-center text-lg-start">
+  <div class="container py-4">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-8">
+        <div class="card register-card bg-body-tertiary shadow-5">
+          <div class="card-body p-5">
+            <h2 class="fw-bold mb-5 text-center">Sign up now</h2>
+            
+            <form method="post">
               
               <div class="row">
                 <div class="col-md-6 mb-4">
-                  <div data-mdb-input-init class="form-outline">
-                    <input type="text" id="form3Example1" name="firstname" class="form-control" />
-                    <label class="form-label" for="form3Example1">First name</label>
+                  <div class="form-floating">
+                    <input type="text" id="firstname" name="firstname" class="form-control" placeholder="First name" required>
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
-                  <div data-mdb-input-init class="form-outline">
-                    <input type="text" id="form3Example2" name="lastname" class="form-control" />
-                    <label class="form-label" for="form3Example2">Last name</label>
+                  <div class="form-floating">
+                    <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last name" required>
                   </div>
                 </div>
               </div>
 
-              <!-- Email input -->
-              <div data-mdb-input-init class="form-outline mb-4">
-                <input type="email" id="form3Example3" name="email" class="form-control" />
-                <label class="form-label" for="form3Example3">Email address</label>
+              <div class="form-floating mb-4">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required>
               </div>
 
-              <!-- Password input -->
-              <div data-mdb-input-init class="form-outline mb-4">
-                <input type="password" id="form3Example4" name="password" class="form-control" />
-                <label class="form-label" for="form3Example4">Password</label>
+              <div class="form-floating mb-4">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
               </div>
 
-              <!-- Submit button -->
-              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">
+              <p class="text-center text-muted mt-5 mb-0">Have already an account? 
+                <a href="{{ url_for('index') }}#login" class="fw-bold text-body"><u>Login here</u></a>
+              </p>
+
+              <button type="submit" class="btn btn-primary btn-block w-100 mb-4">
                 Sign up
               </button>
             </form>
           </div>
         </div>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+            <div class="flash-alert shadow-sm">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
       </div>
     </div>
-        {% for message in get_flashed_messages() %}
-        <div class="alert">{{ message }}</div>
-        {% endfor %}
   </div>
 </section>
-</body>
-</html>
+{% endblock %}
