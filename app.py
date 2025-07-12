@@ -15,11 +15,16 @@ def get_db_connection():
 
 
 
+
+
+
 @app.route('/')
 def index():    
     """Render the home page."""    
     return render_template('index.html')
 
+
+    
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
