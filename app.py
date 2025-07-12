@@ -32,6 +32,7 @@ def register():
             flash('All fields are required.')
             return redirect(url_for('register'))
         
+        conn = get_db_connection()
         existing_email = conn.execute('SELECT id FROM accounts WHERE email = ?', (email,)).fetchone()
         conn.close() 
 
@@ -39,7 +40,7 @@ def register():
             flash('This email have been registered!')
             return redirect(url_for('register'))
         
-        conn = get_db_connection()
+
         conn.execute('INSERT INTO accounts (lastname, firstname, email, pd) VALUES (?, ?, ?, ?)',
                         (lastname, firstname, email, password))
         conn.commit()
