@@ -1,8 +1,15 @@
 from flask import Flask, url_for, render_template, request, redirect, session, flash, abort
+from flask_sqlalchemy import SQLAlchemy
+import sqlite3
 
-# Configuration
-# Initialize Flask application
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'asdfg12345'
+
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 @app.route('/')
