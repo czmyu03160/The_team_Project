@@ -17,8 +17,28 @@ def index():
     """Render the home page."""    
     return render_template('index.html')
 
-@app.route('/register')
-def register():       
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        lastname = request.form['lastname']
+        firstname = request.form['firstname']
+        email = request.form['email']
+        password = request.form['password']
+        if not lastname:
+            flash('lastname is required!')
+        elif not firstname:
+            flash('firstname is required!')
+        elif not email:
+            flash('email is required!')
+        elif not password:
+            flash('password is required!')
+        else:
+            conn = get_db_connection()
+            conn.execute('INSERT INTO accounts (lastname, firstname, email, pd) VALUES (?, ?, ?, ?)',
+                         (lastname, firstname, email, password))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
     return render_template('register.html')
 
 
