@@ -26,7 +26,6 @@ def register():
         password = request.form['password']
         if not lastname or not firstname or not email or not password:
             flash('All fields are required.')
-            return redirect(url_for('register'))
         else:
             conn = get_db_connection()
             conn.execute('INSERT INTO accounts (lastname, firstname, email, pd) VALUES (?, ?, ?, ?)',
