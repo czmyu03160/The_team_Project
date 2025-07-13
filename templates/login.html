@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block head_extra %}
+    <!-- 可選：添加特定於 login 頁面的額外頭部內容 -->
+    <style>
+        .login-container {
+            background: url('{{ url_for("static", filename="login.jpg") }}') no-repeat center center;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <div class="login-card">
+            <h2 class="text-center">Login</h2>
+            <p class="text-center text-muted">Sign into your account</p>
+            <form method="POST" action="/login">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-warning" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <button type="submit" class="btn btn-dark w-100">Login</button>
+            </form>
+            <p class="text-center text-muted mt-5 mb-0">Have already an account?
+                <a href="{{ url_for('register') }}" class="fw-bold text-body"><u>Register here</u></a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

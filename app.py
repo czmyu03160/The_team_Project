@@ -16,12 +16,17 @@ def get_db_connection():
 
 
 
-
-
 @app.route('/')
 def index():    
     """Render the home page."""    
     return render_template('index.html')
+
+
+@app.route('/login')
+def login():    
+    """Render the home page."""    
+    return render_template('login.html')
+
 
 
     
