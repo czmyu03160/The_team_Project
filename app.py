@@ -14,19 +14,34 @@ def get_db_connection():
 
 
 
-
-
 @app.route('/')
 def index():    
     """Render the home page."""    
     return render_template('index.html')
 
 
-@app.route('/login')
-def login():    
-    """Render the home page."""    
-    return render_template('login.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        if not email or not password:
+            flash('Email and password are required.')
+            return redirect(url_for('login'))
+        
+        conn = get_db_connection()
+        account = conn.execute('SELECT * FROM accounts WHERE email = ? AND pd = ?', (email, password)).fetchone()
+        conn.close()
 
+        if account is None:
+            flash('Invalid email or password.')
+            return redirect(url_for('login'))
+        
+        session['account_id'] = account['id']
+        return redirect(url_for('index'))
+    
+    return render_template('login.html')
 
 
     
