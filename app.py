@@ -39,7 +39,10 @@ def login():
             return redirect(url_for('login'))
         
         session['account_id'] = account['id']
-        session['email'] = account['email']  
+        session['firs_tname'] = account['firstname']
+        session['last_name'] = account['lastname']
+        session['email'] = account['email']
+        session['password'] = account['pd']
         return redirect(url_for('index'))
     
     return render_template('login.html')
