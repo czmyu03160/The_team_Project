@@ -54,14 +54,19 @@
         <a href="{{ url_for('index') }}">
             <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo">
         </a>
-                <ul class="topmenu font">
-                  <div class="container mt-2">
-                    <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary">Login</a>
-                    <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary">Register</a>
-                  </div>
-                </ul>
-
-
+            <ul class="topmenu font">
+                <div class="container mt-2">
+                    {% if session.account_id %}
+                        <!-- User bar for logged-in users -->
+                        <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary">Proflie</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-lg btn-outline-secondary">Logout</a>
+                    {% else %}
+                        <!-- Default bar for non-logged-in users -->
+                        <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary">Login</a>
+                        <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary">Register</a>
+                    {% endif %}
+                </div>
+            </ul>
 
 
     </div>

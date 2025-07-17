@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template, request, redirect, session, flash, abort
+from flask import Flask, url_for, render_template, request, redirect, session, flash, abort, sessions
 from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
@@ -39,9 +39,17 @@ def login():
             return redirect(url_for('login'))
         
         session['account_id'] = account['id']
+        session['email'] = account['email']  
         return redirect(url_for('index'))
     
     return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('account_id', None)
+    session.pop('email', None)  
+    return redirect(url_for('index'))
 
 
     
