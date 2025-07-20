@@ -49,19 +49,14 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():    
-    """Render the home page with user's posts if logged in."""
-    posts = []
-    if 'account_id' in session:
-        conn = get_db_connection()
-        posts = conn.execute(
-            'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ? ORDER BY p.upload_timestamp DESC',
-            (session['account_id'],)
-        ).fetchall()
-        conn.close()
+    """Render the home page with ALL posts from ALL users."""
+    conn = get_db_connection()
+    posts = conn.execute(
+        'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id ORDER BY p.upload_timestamp DESC'
+    ).fetchall()
+    conn.close()
             
     return render_template('index.html', posts=posts)
-
-
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
@@ -113,7 +108,7 @@ def newpost():
             conn.close()
 
             flash('File successfully uploaded!')
-            return redirect(url_for('newpost'))
+            return redirect(url_for('index'))
         else:
             flash('File type not allowed. Please upload JPG, PNG, or MP4.')
             return redirect(request.url)

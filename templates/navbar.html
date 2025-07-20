@@ -1,26 +1,31 @@
 <header>
   <div class="navbar navbar-dark bg-dark shadow-sm">
       <a href="{{ url_for('index') }}">
-          <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo">
+          <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo" style="height: 50px; width: auto;">
       </a>
-          <ul class="topmenu font">
-              <div class="container mt-2">
-                  {% if session.account_id %}
-                    <span class="navbar-text text-white-outline">Welcome, {{ session.first_name }}{{ session.last_name }}!</span>
-                    <a href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}" class="btn btn-lg btn-outline-secondary">Profile</a>
-                    <a href="{{ url_for('mypost') }}" class="btn btn-lg btn-outline-secondary">My Posts</a>
-                    <a href="{{ url_for('newpost') }}" class="btn btn-lg btn-outline-secondary">New Post</a>
-                    <a href="{{ url_for('logout') }}" class="btn btn-lg btn-outline-secondary">Logout</a>
-                  {% else %}
-                      {% if request.endpoint not in ['login', 'register'] %}
-                          <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary">Login</a>
-                          <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary">Register</a>
-                      {% endif %}
+      <ul class="nav">
+          <div class="container mt-2 d-flex align-items-center">
+              {% if session.account_id %}
+                <div class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle btn btn-lg btn-outline-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Welcome, {{ session.first_name }}!
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}">Profile</a>
+                    <a class="dropdown-item" href="{{ url_for('mypost') }}">My Posts</a>
+                    <a class="dropdown-item" href="{{ url_for('newpost') }}">New Post</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                  </div>
+                </div>
+              {% else %}
+                  {% if request.endpoint not in ['login', 'register'] %}
+                      <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary mx-1">Login</a>
+                      <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary mx-1">Register</a>
                   {% endif %}
-              </div>
-          </ul>
-
-
+              {% endif %}
+          </div>
+      </ul>
   </div>
   <div class="navbar navbar-light bg-light shadow-lg">
       <div class="nav clearfix">
