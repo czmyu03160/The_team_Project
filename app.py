@@ -62,8 +62,13 @@ def index():
     return render_template('index.html', posts=posts)
 
 
+<<<<<<< HEAD
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
+=======
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+>>>>>>> b72c685e175b6f56896198a6ba8451ef5a3f03e7
     if 'account_id' not in session:
         flash('Please log in to upload files.')
         return redirect(url_for('login'))
@@ -112,11 +117,16 @@ def newpost():
             conn.close()
 
             flash('File successfully uploaded!')
+<<<<<<< HEAD
             return redirect(url_for('newpost'))
+=======
+            return redirect(url_for('index'))
+>>>>>>> b72c685e175b6f56896198a6ba8451ef5a3f03e7
         else:
             flash('File type not allowed. Please upload JPG, PNG, or MP4.')
             return redirect(request.url)
 
+<<<<<<< HEAD
     return render_template('newpost.html')
 
 
@@ -135,6 +145,10 @@ def mypost():
     conn.close()
 
     return render_template('mypost.html', posts=posts)
+=======
+    return render_template('upload.html')
+
+>>>>>>> b72c685e175b6f56896198a6ba8451ef5a3f03e7
 
 
 @app.route('/login', methods=['GET', 'POST'])

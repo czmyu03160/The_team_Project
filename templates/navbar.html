@@ -6,10 +6,15 @@
           <ul class="topmenu font">
               <div class="container mt-2">
                   {% if session.account_id %}
+<<<<<<< HEAD
                     <span class="navbar-text text-white-outline">Welcome, {{ session.first_name }}{{ session.last_name }}!</span>
                     <a href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}" class="btn btn-lg btn-outline-secondary">Profile</a>
                     <a href="{{ url_for('mypost') }}" class="btn btn-lg btn-outline-secondary">My Posts</a>
                     <a href="{{ url_for('newpost') }}" class="btn btn-lg btn-outline-secondary">New Post</a>
+=======
+                      <span class="navbar-text text-white-outline">Welcome, {{ session.first_name }}{{ session.last_name }}!</span>
+                    <a href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}" class="btn btn-lg btn-outline-secondary">Profile</a>
+>>>>>>> b72c685e175b6f56896198a6ba8451ef5a3f03e7
                     <a href="{{ url_for('logout') }}" class="btn btn-lg btn-outline-secondary">Logout</a>
                   {% else %}
                       {% if request.endpoint not in ['login', 'register'] %}
