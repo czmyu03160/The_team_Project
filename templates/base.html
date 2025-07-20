@@ -16,7 +16,23 @@
   
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
-
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+      document.body.addEventListener('click', function(event) {
+          if (event.target.classList.contains('show-more-btn')) {
+              const button = event.target;
+              const card = button.closest('.card');
+              if (card) {
+                  const hiddenComments = card.querySelectorAll('.hidden-comment');
+                  hiddenComments.forEach(function(comment) {
+                      comment.classList.remove('hidden-comment');
+                  });
+                  button.style.display = 'none';
+              }
+          }
+      });
+  });
+</script>
   <style>
     .bd-placeholder-img {
       font-size: 1.125rem;
@@ -82,6 +98,32 @@
         text-align: center;
         padding: 20px;
     }
+    .comments-section {
+        padding: 10px 15px;
+        background-color: #fdfdfd;
+        border-top: 1px solid #eee;
+    }
+    .comment-item {
+        margin-bottom: 8px;
+        font-size: 0.9em;
+    }
+    .comment-item strong {
+        margin-right: 5px;
+    }
+    .comment-form {
+        margin-top: 10px;
+    }
+    .hidden-comment {
+        display: none;
+    }
+    .show-more-btn {
+        background: none;
+        border: none;
+        color: #888;
+        cursor: pointer;
+        padding: 5px 0;
+        font-size: 0.9em;
+    }
   </style>
   <link rel="icon" href="{{ url_for('static', filename='icon.png') }}" type="image/x-icon">
   <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}" type="image/x-icon">
@@ -92,6 +134,18 @@
 <body>
 
   {% include 'navbar.html' %}
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category or 'info' }} alert-dismissible fade show text-center" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
   
   <main>
     {% block content %}{% endblock %}

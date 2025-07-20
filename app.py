@@ -17,6 +17,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
+
 def to_hkt(utc_dt_str):
     """A Jinja2 filter to convert a UTC datetime string to HKT."""
     if not utc_dt_str:
@@ -42,21 +43,65 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def allowed_file(filename):
     """Checks if the file extension is allowed."""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
+def fetch_posts_with_comments(query, params=()):
+    """A helper function to fetch posts and their associated comments."""
+    conn = get_db_connection()
+    posts_from_db = conn.execute(query, params).fetchall()
+    
+    posts = [dict(row) for row in posts_from_db]
+
+    for post in posts:
+        comments = conn.execute(
+            '''
+            SELECT c.*, a.firstname 
+            FROM comments c JOIN accounts a ON c.user_id = a.id 
+            WHERE c.post_id = ? 
+            ORDER BY c.created_at ASC
+            ''', (post['id'],)
+        ).fetchall()
+        post['comments'] = comments 
+
+    conn.close()
+    return posts
+
+
 @app.route('/')
 def index():    
-    """Render the home page with ALL posts from ALL users."""
-    conn = get_db_connection()
-    posts = conn.execute(
-        'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id ORDER BY p.upload_timestamp DESC'
-    ).fetchall()
-    conn.close()
-            
+    """Render the home page with ALL posts and their comments."""
+    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id ORDER BY p.upload_timestamp DESC'
+    posts = fetch_posts_with_comments(query)
     return render_template('index.html', posts=posts)
+
+
+@app.route('/comment/<int:post_id>', methods=['POST'])
+def comment(post_id):
+    if 'account_id' not in session:
+        flash('You must be logged in to comment.')
+        return redirect(url_for('login'))
+
+    comment_text = request.form.get('comment_text')
+    if not comment_text or not comment_text.strip():
+        flash('Comment cannot be empty.')
+        return redirect(request.referrer or url_for('index'))
+
+    conn = get_db_connection()
+    conn.execute(
+        'INSERT INTO comments (post_id, user_id, comment_text) VALUES (?, ?, ?)',
+        (post_id, session['account_id'], comment_text)
+    )
+    conn.commit()
+    conn.close()
+
+    flash('Comment added successfully!')
+    return redirect(request.referrer or url_for('index'))
+
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
@@ -119,18 +164,13 @@ def newpost():
 
 @app.route('/mypost', methods=['GET'])
 def mypost():
-    """Render the user's posts."""
+    """Render the user's posts with their comments."""
     if 'account_id' not in session:
         flash('Please log in to view your posts.')
         return redirect(url_for('login'))
 
-    conn = get_db_connection()
-    posts = conn.execute(
-        'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ? ORDER BY p.upload_timestamp DESC',
-        (session['account_id'],)
-    ).fetchall()
-    conn.close()
-
+    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ? ORDER BY p.upload_timestamp DESC'
+    posts = fetch_posts_with_comments(query, (session['account_id'],))
     return render_template('mypost.html', posts=posts)
 
 
@@ -161,6 +201,7 @@ def login():
     
     return render_template('login.html')
 
+
 @app.route('/profile/<first_name><last_name>')
 def profile(first_name, last_name):
     """Render the profile page."""
@@ -176,7 +217,6 @@ def logout():
     session.pop('email', None)  
     session.clear()
     return redirect(url_for('index'))
-
 
     
 @app.route('/register', methods=['GET', 'POST'])
@@ -205,7 +245,6 @@ def register():
         conn.close()
         return redirect(url_for('index'))
     return render_template('register.html')
-
 
 
 @app.errorhandler(404)

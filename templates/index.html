@@ -55,37 +55,64 @@
 
       {% for post in posts %}
       <div class="col">
-        <div class="card shadow-sm h-100">
-          
-          {% if post.media_type == 'image' %}
-            <div class="card-media-wrapper">
-              <a class="thumbnail-link" 
-                 data-toggle="modal" 
-                 data-target="#imagePreviewModal" 
-                 data-img-src="{{ url_for('static', filename='uploads/' + post.filename) }}"
-                 data-img-desc="{{ post.description }}">
-                <img src="{{ url_for('static', filename='uploads/' + post.filename) }}" alt="{{ post.description }}">
-              </a>
-            </div>
-          {% elif post.media_type == 'video' %}
-            <div class="card-media-wrapper">
-              <video controls>
-                <source src="{{ url_for('static', filename='uploads/' + post.filename) }}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          {% endif %}
+        <div class="card shadow-sm h-100 d-flex flex-column">
+      
+      {% if post.media_type == 'image' %}
+        <div class="card-media-wrapper">
+          <a class="thumbnail-link" 
+             data-toggle="modal" 
+             data-target="#imagePreviewModal" 
+             data-img-src="{{ url_for('static', filename='uploads/' + post.filename) }}"
+             data-img-desc="{{ post.description }}">
+            <img src="{{ url_for('static', filename='uploads/' + post.filename) }}" alt="{{ post.description }}">
+          </a>
+        </div>
+      {% elif post.media_type == 'video' %}
+        <div class="card-media-wrapper">
+          <video controls>
+            <source src="{{ url_for('static', filename='uploads/' + post.filename) }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      {% endif %}
 
-          <div class="card-body d-flex flex-column">
-            <p class="card-text">{{ post.description }}</p>
-            <div class="mt-auto d-flex justify-content-between align-items-center">
-              <small class="text-muted">By: {{ post.firstname }}</small>
-              <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
-            </div>
-          </div>
+      <div class="card-body">
+        <p class="card-text">{{ post.description }}</p>
+        <div class="d-flex justify-content-between align-items-center">
+          <small class="text-muted">By: {{ post.firstname }}</small>
+          <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
         </div>
       </div>
-      {% else %}
+
+      <div class="comments-section mt-auto">
+        <div class="comment-list">
+          
+        {% for comment in post.comments %}
+          <div class="comment-item d-flex justify-content-between align-items-start {% if loop.index > 5 %}hidden-comment{% endif %}">
+            <div>
+              <strong>{{ comment.firstname }}:</strong>
+              <span>{{ comment.comment_text }}</span>
+            </div>
+            <small class="text-muted text-nowrap ml-3">{{ comment.created_at | hkt }}</small>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if post.comments | length > 5 %}
+        <button class="show-more-btn">View all {{ post.comments | length }} comments</button>
+      {% endif %}
+
+      {% if session.account_id %}
+      <form action="{{ url_for('comment', post_id=post.id) }}" method="POST" class="comment-form d-flex">
+        <input type="text" name="comment_text" class="form-control form-control-sm" placeholder="Add a comment..." required>
+        <button type="submit" class="btn btn-outline-secondary btn-sm ml-2">Post</button>
+      </form>
+      {% endif %}
+    </div> 
+
+  </div>
+</div> 
+{% else %}
         <div class="col-lg-12 text-center py-5">
           <p>No posts yet. Be the first to share something!</p>
         </div>
