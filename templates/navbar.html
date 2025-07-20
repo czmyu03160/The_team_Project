@@ -1,0 +1,46 @@
+<header>
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+      <a href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='Logo.png') }}" alt="Logo">
+      </a>
+          <ul class="topmenu font">
+              <div class="container mt-2">
+                  {% if session.account_id %}
+                      <!-- User bar for logged-in users -->
+                      <span class="navbar-text text-white-outline">Welcome, {{ session.first_name }}{{ session.last_name }}!</span>
+                      <a href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}" class="btn btn-lg btn-outline-secondary">Proflie</a>
+                      <a href="{{ url_for('logout') }}" class="btn btn-lg btn-outline-secondary">Logout</a>
+                  {% else %}
+                      <!-- Default bar for non-logged-in users -->
+                      {# This is the key change: only show buttons if not on login or register page #}
+                      {% if request.endpoint not in ['login', 'register'] %}
+                          <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline-secondary">Login</a>
+                          <a href="{{ url_for('register') }}" class="btn btn-lg btn-outline-secondary">Register</a>
+                      {% endif %}
+                  {% endif %}
+              </div>
+          </ul>
+
+
+  </div>
+  <div class="navbar navbar-light bg-light shadow-lg">
+      <div class="nav clearfix">
+        <div class="font">
+          <ul class="nav">
+              <li class="nav-item">
+                  <a class="nav-link btn-lg btn-outline-primary" href="#">Life</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link btn-lg btn-outline-primary" href="#">Sport</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link btn-lg btn-outline-primary" href="#">Hobby</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link btn-lg btn-outline-primary" href="#">Travel</a>
+              </li>
+          </ul>
+        </div>
+      </div>
+  </div>
+</header>
