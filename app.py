@@ -39,13 +39,17 @@ def login():
             return redirect(url_for('login'))
         
         session['account_id'] = account['id']
-        session['firs_tname'] = account['firstname']
+        session['first_name'] = account['firstname']
         session['last_name'] = account['lastname']
         session['email'] = account['email']
         session['password'] = account['pd']
         return redirect(url_for('index'))
     
     return render_template('login.html')
+
+@app.route('/profile/<first_name>/<last_name>')
+def profile(first_name, last_name):
+    return render_template('profile.html', first_name=first_name, last_name=last_name)
 
 
 @app.route('/logout')
