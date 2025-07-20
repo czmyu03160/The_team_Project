@@ -58,7 +58,7 @@
                 <div class="container mt-2">
                     {% if session.account_id %}
                         <!-- User bar for logged-in users -->
-                        <span class="navbar-text text-white-outline">Welcome, {{ session.last_name }}{{ session.first_name }}!</span>
+                        <span class="navbar-text text-white-outline">Welcome, {{ session.first_name }}{{ session.last_name }}!</span>
                         <a href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}" class="btn btn-lg btn-outline-secondary">Proflie</a>
                         <a href="{{ url_for('logout') }}" class="btn btn-lg btn-outline-secondary">Logout</a>
                     {% else %}

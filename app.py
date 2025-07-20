@@ -47,8 +47,12 @@ def login():
     
     return render_template('login.html')
 
-@app.route('/profile/<first_name>/<last_name>')
+@app.route('/profile/<first_name><last_name>')
 def profile(first_name, last_name):
+    """Render the profile page."""
+    if 'account_id' not in session:
+        flash('You need to log in first.')
+        return redirect(url_for('login'))
     return render_template('profile.html', first_name=first_name, last_name=last_name)
 
 
