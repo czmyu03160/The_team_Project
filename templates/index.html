@@ -3,6 +3,38 @@
 {% block title %}Public Feed{% endblock %}
 
 {% block content %}
+<style>
+  .card {
+    border-radius: 20px;       
+    border: 5px solid #6c757d;                
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #a1c4fd 70%, #c2e9fb 50%);       
+    transition: transform 0.3s ease; 
+}
+
+.card:hover {
+    transform: translateY(-5px);  
+}
+
+.card-text {
+    font-size: 1.5rem;           
+    color: #333;                
+    margin-bottom: 15px;       
+}
+
+.text-muted {
+    font-size: 1.2rem;        
+}
+
+.text-center.py-5 {
+    font-size: 3rem;           
+    color: #333;                 
+}
+.hidden-comment {
+    display: none;           
+}
+</style>
+
 <section class="custom-carousel">
   <div id="topCarousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
