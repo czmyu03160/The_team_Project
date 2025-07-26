@@ -45,7 +45,9 @@
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
       <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      {% if not session.account_id %}
       <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      {% endif %}
     </div>
     <div class="carousel-inner">
       <div class="carousel-item active">
@@ -66,6 +68,7 @@
           <p><a href="{{ url_for('hobby') }}" class="btn btn-secondary my-2">Explore Now</a></p>
         </div>
       </div>
+      {% if not session.account_id %}
       <div class="carousel-item">
         <div class="carousel-caption-wrapper">
           <h1 class="font-weight-light">Join Our Community</h1>
@@ -73,6 +76,8 @@
           <p><a href="{{ url_for('register') }}" class="btn btn-info my-2">Register Today</a></p>
         </div>
       </div>
+      {% endif %}
+
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#topCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>

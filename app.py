@@ -284,6 +284,10 @@ def logout():
     
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if 'account_id' in session:
+        flash('You have logged-in.') 
+        return redirect(url_for('index'))
+    
     if request.method == 'POST':
         lastname = request.form['lastname']
         firstname = request.form['firstname']
