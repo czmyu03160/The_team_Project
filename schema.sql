@@ -16,6 +16,7 @@ CREATE TABLE posts (
     description TEXT,
     filename TEXT NOT NULL,
     media_type TEXT NOT NULL, 
+    type TEXT,
     upload_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES accounts (id)
 );

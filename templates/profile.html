@@ -6,11 +6,10 @@
     <div class="col-md-8">
       <h2 class="mb-4 text-center">Profile</h2>
 
-      <!-- Personal Info Section -->
       <div class="card mb-4">
         <div class="card-body">
           <h3 class="card-title">Personal Info</h3>
-          <form method="POST" action="/update-profile">
+          <form method="POST" action="{{ url_for('update_profile') }}">
             <input type="hidden" name="account_id" value="{{ session.account_id }}">
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -30,6 +29,7 @@
               <label for="password" class="form-label">Password</label>
               <input type="password" class="form-control" id="password" name="password" value="{{ session.password }}" required>
             </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
           </form>
         </div>
       </div>

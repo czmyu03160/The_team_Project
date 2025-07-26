@@ -19,7 +19,6 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 
 def to_hkt(utc_dt_str):
-    """A Jinja2 filter to convert a UTC datetime string to HKT."""
     if not utc_dt_str:
         return ""
     try:
@@ -45,14 +44,26 @@ def get_db_connection():
 
 
 def allowed_file(filename):
-    """Checks if the file extension is allowed."""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def fetch_posts_with_comments(query, params=()):
-    """A helper function to fetch posts and their associated comments."""
+def fetch_posts_with_comments(query, params=(), type_param=None):
     conn = get_db_connection()
+    
+    if 'ORDER BY' in query.upper():
+        query = query.split('ORDER BY')[0].strip()
+    
+    if type_param:
+        if 'WHERE' in query.upper():
+            query += " AND p.type = ?"
+        else:
+            query += " WHERE p.type = ?"
+        params = params + (type_param,)
+    
+
+    query += " ORDER BY p.upload_timestamp DESC"
+    
     posts_from_db = conn.execute(query, params).fetchall()
     
     posts = [dict(row) for row in posts_from_db]
@@ -74,10 +85,16 @@ def fetch_posts_with_comments(query, params=()):
 
 @app.route('/')
 def index():    
-    """Render the home page with ALL posts and their comments."""
-    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id ORDER BY p.upload_timestamp DESC'
-    posts = fetch_posts_with_comments(query)
+    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id'
+    posts = fetch_posts_with_comments(query)  
     return render_template('index.html', posts=posts)
+
+
+@app.route('/hobby') 
+def hobby():    
+    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id'
+    posts = fetch_posts_with_comments(query, type_param='Hobby')  
+    return render_template('Hobby.html', posts=posts)
 
 
 @app.route('/comment/<int:post_id>', methods=['POST'])
@@ -116,6 +133,11 @@ def newpost():
         
         file = request.files['file']
         description = request.form['description']
+        post_type = request.form.get('type')  
+
+        if not post_type:
+            flash('Please select a type.')
+            return redirect(request.url)
 
         if file.filename == '':
             flash('No selected file')
@@ -146,8 +168,8 @@ def newpost():
 
             conn = get_db_connection()
             conn.execute(
-                'INSERT INTO posts (user_id, description, filename, media_type) VALUES (?, ?, ?, ?)',
-                (session['account_id'], description, unique_filename, media_type)
+                'INSERT INTO posts (user_id, description, filename, media_type, type) VALUES (?, ?, ?, ?, ?)',  
+                (session['account_id'], description, unique_filename, media_type, post_type)
             )
             conn.commit()
             conn.close()
@@ -164,13 +186,12 @@ def newpost():
 
 @app.route('/mypost', methods=['GET'])
 def mypost():
-    """Render the user's posts with their comments."""
     if 'account_id' not in session:
         flash('Please log in to view your posts.')
         return redirect(url_for('login'))
 
-    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ? ORDER BY p.upload_timestamp DESC'
-    posts = fetch_posts_with_comments(query, (session['account_id'],))
+    query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ?'
+    posts = fetch_posts_with_comments(query, (session['account_id'],))  # 函數會添加 ORDER BY
     return render_template('mypost.html', posts=posts)
 
 
@@ -202,13 +223,55 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/profile/<first_name><last_name>')
-def profile(first_name, last_name):
-    """Render the profile page."""
+@app.route('/profile')
+def profile():
     if 'account_id' not in session:
         flash('You need to log in first.')
         return redirect(url_for('login'))
-    return render_template('profile.html', first_name=first_name, last_name=last_name)
+    return render_template('profile.html')
+
+
+@app.route('/update-profile', methods=['POST'])
+def update_profile():
+    if 'account_id' not in session:
+        flash('Authentication required.')
+        return redirect(url_for('login'))
+
+    account_id = request.form.get('account_id')
+    if str(session.get('account_id')) != account_id:
+        flash('Unauthorized action.')
+        return redirect(url_for('index'))
+
+    first_name = request.form.get('first_name')
+    last_name = request.form.get('last_name')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    if not all([first_name, last_name, email, password]):
+        flash('All fields are required.')
+        return redirect(url_for('profile'))
+
+    conn = get_db_connection()
+    existing_user = conn.execute('SELECT id FROM accounts WHERE email = ? AND id != ?', (email, account_id)).fetchone()
+    if existing_user:
+        flash('This email is already registered by another account.')
+        conn.close()
+        return redirect(url_for('profile'))
+
+    conn.execute(
+        'UPDATE accounts SET firstname = ?, lastname = ?, email = ?, pd = ? WHERE id = ?',
+        (first_name, last_name, email, password, account_id)
+    )
+    conn.commit()
+    conn.close()
+
+    session['first_name'] = first_name
+    session['last_name'] = last_name
+    session['email'] = email
+    session['password'] = password
+
+    flash('Profile updated successfully!')
+    return redirect(url_for('profile'))
 
 
 @app.route('/logout')
@@ -252,4 +315,4 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 __name__ = '__main__'
-app.run(debug=True) 
+app.run(debug=True)

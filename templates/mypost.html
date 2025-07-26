@@ -1,18 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}The team{% endblock %}
+{% block title %}My Posts{% endblock %}
 
 {% block content %}
-
-
-
-
-
-
 <section class="py-5 text-center container">
   <div class="row py-lg-5">
-    <div class="col-12 col-md-6 mx-auto">
-      <h1 class="font-weight-light text-primary">My Posts</h1>
+    <div class="col-12 col-md-8 mx-auto">
+      <h1 class="font-weight-light" style="color: #0d6efd;">My Posts</h1>
       {% if session.account_id %}
         <p class="lead text-muted">Welcome back, {{ session.first_name }}! Explore your latest uploads.</p>
       {% else %}
@@ -22,32 +16,35 @@
   </div>
 </section>
 
-<div class="album py-4">
+<div class="album py-4 bg-light">
   <div class="container-fluid">
-    <div class="row row-cols-1 row-cols-md-3 g-2">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
       {% for post in posts %}
       <div class="col">
-        <div class="card border-0">
-          <div class="card-img-wrapper">
+        <div class="card shadow-sm h-100">
+          <div class="card-media-wrapper">
             {% if post.media_type == 'image' %}
-              <img src="{{ url_for('static', filename='uploads/' + post.filename) }}" alt="{{ post.description }}" class="card-img-top img-fluid ig-style">
-              <div class="card-overlay">
-                <p class="card-text">{{ post.description|truncate(15) }}</p>
-              </div>
+              <img src="{{ url_for('static', filename='uploads/' + post.filename) }}" class="img-fluid" alt="{{ post.description }}">
             {% elif post.media_type == 'video' %}
-              <video controls class="card-img-top img-fluid ig-style">
+              <video controls class="img-fluid">
                 <source src="{{ url_for('static', filename='uploads/' + post.filename) }}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
-              <div class="card-overlay">
-                <p class="card-text">{{ post.description|truncate(15) }}</p>
-              </div>
             {% endif %}
           </div>
-          <div class="card-body text-center p-1">
-            <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
+
+
+          <div class="card-body d-flex flex-column">
+            <p class="card-text">{{ post.description }}</p>
+            <div class="mt-auto">
+              <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
+            </div>
           </div>
         </div>
+      </div>
+      {% else %}
+      <div class="col-12">
+        <p class="text-center text-muted">You haven't posted anything yet.</p>
       </div>
       {% endfor %}
     </div>
@@ -55,50 +52,40 @@
 </div>
 {% endblock %}
 
-{% block styles %}
+{% block head_extra %}
 <style>
-  .album {
-    padding: 1rem;
-  }
-  .card-img-wrapper {
-    position: relative;
+  .card-media-wrapper {
+    height: 250px; 
     overflow: hidden;
-    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa; 
   }
-  .ig-style {
+
+  .card-media-wrapper img,
+  .card-media-wrapper video {
     width: 100%;
-    height: auto;
-    object-fit: cover;
-    max-height: 200px; /* 縮小圖片高度，模擬 IG 尺寸 */
-    border-radius: 10px;
-    transition: transform 0.3s ease;
+    height: 100%;
+    object-fit: contain; 
   }
-  .ig-style:hover {
-    transform: scale(1.05);
-  }
-  .card-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-  .card:hover .card-overlay {
-    opacity: 1;
-  }
+
   .card {
-    border: none;
-    background: transparent;
-  }
-  .card-body {
-    padding: 0.25rem;
-  }
+    border-radius: 20px;       
+    border: 5px solid #6c757d;                
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #a1c4fd 70%, #c2e9fb 50%);       
+    transition: transform 0.3s ease; 
+}
+
+.card:hover {
+    transform: translateY(-5px);  
+}
+
+.card-text {
+    font-size: 1.5rem;           
+    color: #333;                
+    margin-bottom: 15px;       
+}
 </style>
 {% endblock %}

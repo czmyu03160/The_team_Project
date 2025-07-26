@@ -45,21 +45,25 @@
                 <div class="col-md-6 mb-4">
                   <div class="form-floating">
                     <input type="text" id="firstname" name="firstname" class="form-control" placeholder="First name" required>
+                    <label for="firstname">First name</label> 
                   </div>
                 </div>
                 <div class="col-md-6 mb-4">
                   <div class="form-floating">
                     <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last name" required>
+                    <label for="firstname">Last name</label> 
                   </div>
                 </div>
               </div>
 
               <div class="form-floating mb-4">
                 <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required>
+                <label for="firstname">Email address</label> 
               </div>
 
               <div class="form-floating mb-4">
                 <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                <label for="firstname">Password</label> 
               </div>
                 <p class="text-center text-muted mt-5 mb-0">Have already an account? 
                 <a href="{{ url_for('login') }}" class="fw-bold text-body"><u>Login here</u></a>
