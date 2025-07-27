@@ -68,24 +68,6 @@ Or, if your file is configured to run directly:
 python app.py
 The application will be available at http://127.0.0.1:5000.
 
-
-**Project Structure**
-├── static/
-│   ├── uploads/      # Stores user-uploaded images and videos
-│   └── icon.png
-├── templates/
-│   ├── base.html     # The base template for all pages
-│   ├── index.html    # Homepage / Main Feed
-│   ├── login.html    # Login page
-│   ├── register.html # Registration page
-│   ├── newpost.html  # New post creation page
-│   └── ...           # Other HTML files
-├── app.py            # Main Flask application file
-├── database.db       # SQLite database file
-├── init_db.py        # (Optional) Database initialization script
-└── README.md         # This file
-
-
-**Contributors**
-Yu Tang Hing
-Sze Chi Keung
+**Contributors** <br>
+* Yu Tang Hing <br>
+* Sze Chi Keung
