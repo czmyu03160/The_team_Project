@@ -33,7 +33,7 @@ This is a full-stack web application project developed using the Python Flask fr
     -   Bootstrap 5
 -   **Core Python Libraries:**
     -   `Flask`: The core web framework.
-    -   `moviepy`: Used for server-side video processing to validate duration.
+    -   `moviepy==1.0.3`: Used for server-side video processing to validate duration.
     -   `pytz`: Used for handling timezone conversions (UTC to HKT).
     -   `uuid`: Used for generating unique identifiers for filenames.
 
