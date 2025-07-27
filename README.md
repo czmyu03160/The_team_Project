@@ -55,7 +55,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 **3. Install Dependencies**
-pip install Flask moviepy pytz
+pip install Flask moviepy==1.0.3 pytz
 
 **4. Initialize the Database**
 If you have an init_db.py script, run it to create the database tables.

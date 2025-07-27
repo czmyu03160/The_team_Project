@@ -4,7 +4,7 @@ import random
 from flask import Flask, url_for, render_template, request, redirect, session, flash
 import sqlite3
 from moviepy.editor import VideoFileClip
-from datetime import datetime
+from datetime import datetime, timezone
 import pytz 
 
 app = Flask(__name__)
@@ -121,6 +121,70 @@ def comment(post_id):
 
     return redirect(request.referrer or url_for('index'))
 
+@app.route('/update_comment/<int:comment_id>', methods=['GET', 'POST'])
+def update_comment(comment_id):
+    if 'account_id' not in session:
+        flash('Please log in to edit comments.')
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    comment = conn.execute('SELECT * FROM comments WHERE id = ?', (comment_id,)).fetchone()
+
+    if comment is None:
+        conn.close()
+        flash('Comment not found.')
+        return redirect(request.referrer or url_for('index'))
+
+    if comment['user_id'] != session['account_id']:
+        conn.close()
+        flash('You are not authorized to edit this comment.')
+        return redirect(request.referrer or url_for('index'))
+
+    if request.method == 'POST':
+        comment_text = request.form.get('comment_text')
+        if not comment_text or not comment_text.strip():
+            flash('Comment cannot be empty.')
+            return render_template('update_comment.html', comment=comment)
+
+        current_utc_time = datetime.now(timezone.utc)
+        conn.execute(
+            'UPDATE comments SET comment_text = ?, created_at = ? WHERE id = ?',
+            (comment_text, current_utc_time, comment_id)
+        )
+        conn.commit()
+        conn.close()
+        flash('Comment updated successfully!')
+        return redirect(request.form.get('redirect_url') or url_for('index'))
+
+    conn.close()
+    return render_template('update_comment.html', comment=comment, redirect_url=request.referrer)
+
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])
+def delete_comment(comment_id):
+    if 'account_id' not in session:
+        flash('Please log in to delete comments.')
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    comment = conn.execute('SELECT * FROM comments WHERE id = ?', (comment_id,)).fetchone()
+
+    if comment is None:
+        conn.close()
+        flash('Comment not found.')
+        return redirect(request.referrer or url_for('index'))
+
+    if comment['user_id'] != session['account_id']:
+        conn.close()
+        flash('You are not authorized to delete this comment.')
+        return redirect(request.referrer or url_for('index'))
+
+    conn.execute('DELETE FROM comments WHERE id = ?', (comment_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Comment deleted successfully.')
+    return redirect(request.referrer or url_for('index'))
+
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def newpost():
@@ -193,9 +257,81 @@ def mypost():
         return redirect(url_for('login'))
 
     query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id WHERE p.user_id = ?'
-    posts = fetch_posts_with_comments(query, (session['account_id'],))  # 函數會添加 ORDER BY
+    posts = fetch_posts_with_comments(query, (session['account_id'],)) 
     return render_template('mypost.html', posts=posts)
 
+
+@app.route('/update_post/<int:post_id>', methods=['GET', 'POST'])
+def update_post(post_id):
+    if 'account_id' not in session:
+        flash('Please log in to edit posts.')
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    post = conn.execute('SELECT * FROM posts WHERE id = ?', (post_id,)).fetchone()
+
+    if post is None:
+        conn.close()
+        flash('Post not found.')
+        return redirect(url_for('mypost'))
+
+    if post['user_id'] != session['account_id']:
+        conn.close()
+        flash('You are not authorized to edit this post.')
+        return redirect(url_for('mypost'))
+
+    if request.method == 'POST':
+        description = request.form['description']
+        post_type = request.form['type']
+        current_utc_time = datetime.now(timezone.utc)
+
+        conn.execute(
+            'UPDATE posts SET description = ?, type = ?, upload_timestamp = ? WHERE id = ?',
+            (description, post_type, current_utc_time, post_id)
+        )
+        conn.commit()
+        conn.close()
+        
+        flash('Post updated successfully!')
+        return redirect(url_for('mypost'))
+
+    conn.close()
+    return render_template('update_post.html', post=post)
+
+
+@app.route('/delete_post/<int:post_id>', methods=['POST'])
+def delete_post(post_id):
+    if 'account_id' not in session:
+        flash('Please log in to delete posts.')
+        return redirect(url_for('login'))
+
+    conn = get_db_connection()
+    post = conn.execute('SELECT * FROM posts WHERE id = ?', (post_id,)).fetchone()
+
+    if post is None:
+        conn.close()
+        flash('Post not found.')
+        return redirect(url_for('mypost'))
+
+    if post['user_id'] != session['account_id']:
+        conn.close()
+        flash('You are not authorized to delete this post.')
+        return redirect(url_for('mypost'))
+
+    try:
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], post['filename'])
+        if os.path.exists(filepath):
+            os.remove(filepath)
+    except Exception as e:
+        flash(f'Error deleting file: {e}')
+
+    conn.execute('DELETE FROM comments WHERE post_id = ?', (post_id,))
+    conn.execute('DELETE FROM posts WHERE id = ?', (post_id,))
+    conn.commit()
+    conn.close()
+
+    flash('Post deleted successfully.')
+    return redirect(url_for('mypost'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

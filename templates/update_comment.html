@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center mb-4">Edit Your Comment</h2>
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-warning text-center" role="alert">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('update_comment', comment_id=comment.id) }}">
+                        <input type="hidden" name="redirect_url" value="{{ redirect_url or url_for('index') }}">
+                        
+                        <div class="mb-3">
+                            <label for="comment_text" class="form-label">Your Comment</label>
+                            <textarea class="form-control" id="comment_text" name="comment_text" rows="4" required>{{ comment.comment_text }}</textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Update Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
