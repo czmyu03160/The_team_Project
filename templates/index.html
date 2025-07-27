@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Public Feed{% endblock %}
+{% block title %}The team{% endblock %}
 
 {% block content %}
 <style>
@@ -26,9 +26,7 @@
     font-size: 3rem;           
     color: #333;                 
   }
-  /*.hidden-comment {
-    display: none;           
-  }*/
+
   .comment-list {
     max-height: 100px; 
     overflow-y: auto;  
@@ -56,7 +54,7 @@
     transform: translateX(-50%);
     text-align: center;
     color: white;
-background: rgba(0, 0, 0, 0);
+    background: rgba(0, 0, 0, 0);
     padding: 20px;
     border-radius: 10px;
 }
@@ -80,10 +78,6 @@ background: rgba(0, 0, 0, 0);
               Your browser does not support the video tag.
             </video>
           {% endif %}
-          <div class="carousel-caption-wrapper">
-            <h1 class="font-weight-light">{{ post.description }}</h1>
-            <p class="lead">By: {{ post.firstname }} at {{ post.upload_timestamp | hkt }}</p>
-          </div>
         </div>
       {% else %}
       {% endfor %}
@@ -128,17 +122,16 @@ background: rgba(0, 0, 0, 0);
           {% endif %}
 
           <div class="card-body">
-            <p class="card-text">{{ post.description }}</p>
+            <p class="card-text font">{{ post.description }}</p>
             <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">By: {{ post.firstname }}</small>
-              <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
+              <small class="text-muted font">{{ post.firstname }}</small>
+              <small class="text-muted font">{{ post.upload_timestamp | hkt }}</small>
             </div>
           </div>
 
           <div class="comments-section mt-auto">
             <div class="comment-list">
               {% for comment in post.comments %}
-                <!-- <div class="comment-item d-flex justify-content-between align-items-start {% if loop.index > 5 %}hidden-comment{% endif %}"> -->
                   <div class="comment-item d-flex justify-content-between align-items-start">
                   <div>
                     <strong>{{ comment.firstname }}:</strong>
@@ -149,9 +142,6 @@ background: rgba(0, 0, 0, 0);
               {% endfor %}
             </div>
 
-            <!-- {% if post.comments | length > 2 %} 
-              <button class="show-more-btn">View all {{ post.comments | length }} comments</button>
-            {% endif %}-->
 
             {% if session.account_id %}
               <form action="{{ url_for('comment', post_id=post.id) }}" method="POST" class="comment-form d-flex">
