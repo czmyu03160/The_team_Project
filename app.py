@@ -31,7 +31,7 @@ def to_hkt(utc_dt_str):
 
         hkt_dt = utc_zone.localize(utc_dt).astimezone(hkt_zone)
 
-        return hkt_dt.strftime('%Y-%m-%d %H:%M:%S')
+        return hkt_dt.strftime('%Y-%m-%d %H:%M')
     except (ValueError, TypeError):
         return utc_dt_str
 
@@ -96,7 +96,8 @@ def index():
 def hobby():    
     query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id'
     posts = fetch_posts_with_comments(query, type_param='Hobby')  
-    return render_template('Hobby.html', posts=posts)
+    carousel_posts = random.sample(posts, min(len(posts), 3)) if posts else []
+    return render_template('hobby.html', posts=posts, carousel_posts=carousel_posts)
 
 
 @app.route('/comment/<int:post_id>', methods=['POST'])
@@ -118,7 +119,6 @@ def comment(post_id):
     conn.commit()
     conn.close()
 
-    flash('Comment added successfully!')
     return redirect(request.referrer or url_for('index'))
 
 

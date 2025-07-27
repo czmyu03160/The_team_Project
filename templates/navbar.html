@@ -9,15 +9,15 @@
       <div>
           {% if session.account_id %}
             <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle btn btn-lg btn-outline-secondary text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Welcome, {{ session.first_name }} !
-              </a>
+                <a class="nav-link dropdown-toggle btn btn-outline-secondary text-white font" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Welcome, {{ session.first_name }}
+                </a>
               <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}">Profile</a>
-                <a class="dropdown-item" href="{{ url_for('mypost') }}">My Posts</a>
-                <a class="dropdown-item" href="{{ url_for('newpost') }}">New Post</a>
+                <a class="dropdown-item font" href="{{url_for('profile', first_name=session.first_name, last_name=session.last_name)}}">Profile</a>
+                <a class="dropdown-item font" href="{{ url_for('mypost') }}">My Posts</a>
+                <a class="dropdown-item font" href="{{ url_for('newpost') }}">New Post</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                <a class="dropdown-item font" href="{{ url_for('logout') }}">Logout</a>
               </div>
             </div>
           {% else %}

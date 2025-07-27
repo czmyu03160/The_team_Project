@@ -38,48 +38,55 @@
   .comment-item small {
     font-size: 0.8em;  
   }
+
+  .custom-carousel .carousel-item img,
+.custom-carousel .carousel-item video {
+    object-fit: contain;
+    height: 1000px; 
+}
+.carousel-caption-wrapper {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0);
+    padding: 20px;
+    border-radius: 10px;
+}
+
 </style>
 
 <section class="custom-carousel">
   <div id="topCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
-      <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      {% for i in range(carousel_posts | length) %}
+        <button type="button" data-bs-target="#topCarousel" data-bs-slide-to="{{ i }}" {% if i == 0 %}class="active" aria-current="true"{% endif %} aria-label="Slide {{ i + 1 }}"></button>
+      {% endfor %}
     </div>
     <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="carousel-caption-wrapper">
-          <h1 class="font-weight-light">Share Your Moments</h1>
-          <p class="lead">This is a public platform for everyone. See what's new from our community.</p>
-          {% if session.account_id %}
-            <p><a href="{{ url_for('newpost') }}" class="btn btn-primary my-2">Create a New Post</a></p>
-          {% else %}
-            <p><a href="{{ url_for('login') }}" class="btn btn-primary my-2">Login to Share</a></p>
+      {% for post in carousel_posts %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          {% if post.media_type == 'image' %}
+            <img src="{{ url_for('static', filename='uploads/' + post.filename) }}" class="d-block w-100" alt="{{ post.description }}">
+          {% elif post.media_type == 'video' %}
+            <video class="d-block w-100" autoplay muted loop>
+              <source src="{{ url_for('static', filename='uploads/' + post.filename) }}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
           {% endif %}
         </div>
-      </div>
-      <div class="carousel-item">
-        <div class="carousel-caption-wrapper">
-          <h1 class="font-weight-light">Explore Hobbies</h1>
-          <p class="lead">Discover new hobbies and interests from users around the world.</p>
-          <p><a href="#" class="btn btn-secondary my-2">Explore Now</a></p>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="carousel-caption-wrapper">
-          <h1 class="font-weight-light">Join Our Community</h1>
-          <p class="lead">Register today to start sharing your life and connecting with others.</p>
-          <p><a href="{{ url_for('register') }}" class="btn btn-info my-2">Register Today</a></p>
-        </div>
-      </div>
+      {% else %}
+      {% endfor %}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#topCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span> 
+      <span class="visually-hidden">Previous</span>
+    </button>
     <button class="carousel-control-next" type="button" data-bs-target="#topCarousel" data-bs-slide="next">
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span> 
+      <span class="visually-hidden">Next</span>
     </button>
   </div>
 </section>
@@ -113,10 +120,10 @@
           {% endif %}
 
           <div class="card-body">
-            <p class="card-text">{{ post.description }}</p>
+            <p class="card-text font">{{ post.description }}</p>
             <div class="d-flex justify-content-between align-items-center">
-              <small class="text-muted">By: {{ post.firstname }}</small>
-              <small class="text-muted">{{ post.upload_timestamp | hkt }}</small>
+              <small class="text-muted font">{{ post.firstname }}</small>
+              <small class="text-muted font">{{ post.upload_timestamp | hkt }}</small>
             </div>
           </div>
 
