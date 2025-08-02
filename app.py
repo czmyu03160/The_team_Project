@@ -87,7 +87,7 @@ def fetch_posts_with_comments(query, params=(), type_param=None):
 @app.route('/')
 def index():    
     query = 'SELECT p.*, a.firstname, a.lastname FROM posts p JOIN accounts a ON p.user_id = a.id'
-    posts = fetch_posts_with_comments(query)
+    posts = fetch_posts_with_comments(query, type_param='Life')  
     carousel_posts = random.sample(posts, min(len(posts), 3)) if posts else []
     return render_template('index.html', posts=posts, carousel_posts=carousel_posts)
 
