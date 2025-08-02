@@ -12,7 +12,7 @@ app.config['SECRET_KEY'] = 'asdfg12345'
 
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4'}
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024 
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 if not os.path.exists(UPLOAD_FOLDER):
@@ -225,7 +225,7 @@ def newpost():
                     clip.close()
                     if duration > 60:
                         os.remove(filepath) 
-                        flash('Video is too long! Maximum 30 seconds allowed.')
+                        flash('Video is too long! Maximum 60 seconds allowed.')
                         return redirect(request.url)
                 except Exception as e:
                     os.remove(filepath) 
